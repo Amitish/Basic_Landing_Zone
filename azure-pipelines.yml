@@ -19,7 +19,7 @@ jobs:
       provider: 'azurerm'
       command: 'init'
       workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
-      backendAzureRmStorageAccountName: 'detoxstg'
-      backendAzureRmContainerName: 'detoxctg'
+      backendAzureRmStorageAccountName: 'stglactab'
+      backendAzureRmContainerName: 'cntrlab'
       backendAzureRmKey: 'basic.tfstafe'
 
