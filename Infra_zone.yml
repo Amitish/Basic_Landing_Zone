@@ -4,7 +4,7 @@ pool: mera-agent-pool
 
 jobs:
 - job: build
-  displayName: Build Job
+  displayName: Initialising
   steps:
   - task: PowerShell@2
     displayName: Terraform Fetch Directory
@@ -33,7 +33,7 @@ jobs:
 
 - job: scan
   dependsOn: build
-  displayName: Scanning Job
+  displayName: Planning
   steps:
   - task: TerraformTask@5
     displayName: Terraform Init
@@ -45,6 +45,14 @@ jobs:
       backendAzureRmStorageAccountName: 'stglactab'
       backendAzureRmContainerName: 'cntrlab'
       backendAzureRmKey: 'basic.tfstate'
+
+  - task: TerraformTask@5
+    displayName: Terraform Plan
+    inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
+        environmentServiceNameAzureRM: 'new-service'
 
     
 
