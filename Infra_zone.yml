@@ -44,14 +44,7 @@ jobs:
       backendServiceArm: 'new-service'
       backendAzureRmStorageAccountName: 'stglactab'
       backendAzureRmContainerName: 'cntrlab'
-      backendAzureRmKey: 'basic.tfstafe'
-
-  - task: TerraformTask@5
-    inputs:
-      provider: 'azurerm'
-      command: 'plan'
-      workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
-      environmentServiceNameAzureRM: 'new-service'
+      backendAzureRmKey: 'basic.tfstate'
 
     
 
