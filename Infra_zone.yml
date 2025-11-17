@@ -31,28 +31,28 @@ jobs:
       backendAzureRmKey: 'basic.tfstate'
 
 
-- job: scan
-  dependsOn: build
-  displayName: Planning
-  steps:
-  - task: TerraformTask@5
-    displayName: Terraform Init
-    inputs:
-      provider: 'azurerm'
-      command: 'init'
-      workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
-      backendServiceArm: 'new-service'
-      backendAzureRmStorageAccountName: 'stglactab'
-      backendAzureRmContainerName: 'cntrlab'
-      backendAzureRmKey: 'basic.tfstate'
+# - job: scan
+#   dependsOn: build
+#   displayName: Planning
+#   steps:
+#   - task: TerraformTask@5
+#     displayName: Terraform Init
+#     inputs:
+#       provider: 'azurerm'
+#       command: 'init'
+#       workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
+#       backendServiceArm: 'new-service'
+#       backendAzureRmStorageAccountName: 'stglactab'
+#       backendAzureRmContainerName: 'cntrlab'
+#       backendAzureRmKey: 'basic.tfstate'
 
-  - task: TerraformTask@5
-    displayName: Terraform Plan
-    inputs:
-        provider: 'azurerm'
-        command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
-        environmentServiceNameAzureRM: 'new-service'
+#   - task: TerraformTask@5
+#     displayName: Terraform Plan
+#     inputs:
+#         provider: 'azurerm'
+#         command: 'plan'
+#         workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
+#         environmentServiceNameAzureRM: 'new-service'
 
     
 
