@@ -3,12 +3,23 @@ trigger: none
 pool: mera-agent-pool
 
 jobs:
-- job: terraforminit
+- job: terraformexecution
   displayName: Pipeline run . . . 
   steps:
   - task: PowerShell@2
-    displayName: Terraform Init
+    displayName: Terraform Fetch Directory
     inputs:
       targetType: 'inline'
       script: |
         echo "Working directory check"
+
+  - task: TerraformTask@5
+    displayName: Terraform Init
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
+      backendAzureRmStorageAccountName: 'detoxstg'
+      backendAzureRmContainerName: 'detoxctg'
+      backendAzureRmKey: 'basic.tfstafe'
+
