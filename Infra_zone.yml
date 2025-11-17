@@ -19,6 +19,7 @@ jobs:
       provider: 'azurerm'
       command: 'init'
       workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
+      backendServiceArm: 'new-service'
       backendAzureRmStorageAccountName: 'stglactab'
       backendAzureRmContainerName: 'cntrlab'
       backendAzureRmKey: 'basic.tfstafe'
