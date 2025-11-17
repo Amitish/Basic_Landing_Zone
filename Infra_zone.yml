@@ -3,8 +3,8 @@ trigger: none
 pool: mera-agent-pool
 
 jobs:
-- job: terraformexecution
-  displayName: Pipeline run . . . 
+- job: build
+  displayName: Build Job
   steps:
   - task: PowerShell@2
     displayName: Terraform Fetch Directory
@@ -12,6 +12,12 @@ jobs:
       targetType: 'inline'
       script: |
         echo "Working directory check"
+
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'validate'
+      workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
 
   - task: TerraformTask@5
     displayName: Terraform Init
@@ -23,4 +29,29 @@ jobs:
       backendAzureRmStorageAccountName: 'stglactab'
       backendAzureRmContainerName: 'cntrlab'
       backendAzureRmKey: 'basic.tfstafe'
+
+
+- job: scan
+  dependsOn: build
+  displayName: Scanning Job
+  steps:
+  - task: TerraformTask@5
+    displayName: Terraform Init
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
+      backendServiceArm: 'new-service'
+      backendAzureRmStorageAccountName: 'stglactab'
+      backendAzureRmContainerName: 'cntrlab'
+      backendAzureRmKey: 'basic.tfstafe'
+
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
+      environmentServiceNameAzureRM: 'new-service'
+
+    
 
