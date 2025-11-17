@@ -28,7 +28,7 @@ jobs:
       backendServiceArm: 'new-service'
       backendAzureRmStorageAccountName: 'stglactab'
       backendAzureRmContainerName: 'cntrlab'
-      backendAzureRmKey: 'basic.tfstafe'
+      backendAzureRmKey: 'basic.tfstate'
 
 
 - job: scan
