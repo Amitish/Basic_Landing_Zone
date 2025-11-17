@@ -1,0 +1,15 @@
+trigger: none
+
+pool: mera-agent-pool
+
+jobs:
+- job: terraforminit
+  displayName: Terraform Init
+  steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Write your PowerShell commands here.
+        
+        echo "Working directory check"
