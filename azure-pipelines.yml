@@ -1,0 +1,25 @@
+trigger: none
+
+pool: mera-agent-pool
+
+jobs:
+- job: terraformexecution
+  displayName: Terrform basic commands
+  steps:
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'validate'
+      workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
+
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
+      backendServiceArm: 'new-service'
+      backendAzureRmStorageAccountName: 'stglactab'
+      backendAzureRmContainerName: 'cntrlab'
+      backendAzureRmKey: 'basic.tfstate'
+
+  
