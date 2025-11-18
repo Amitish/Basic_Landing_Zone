@@ -7,14 +7,7 @@ jobs:
   displayName: Terrform basic commands
   steps:
   - task: TerraformTask@5
-    displayName: Terraform Validate
-    inputs:
-      provider: 'azurerm'
-      command: 'validate'
-      workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
-
-  - task: TerraformTask@5
-    displayName: Terraform Validate
+    displayName: < Terraform Init >
     inputs:
       provider: 'azurerm'
       command: 'init'
@@ -24,4 +17,10 @@ jobs:
       backendAzureRmContainerName: 'cntrlab'
       backendAzureRmKey: 'basic.tfstate'
 
+  - task: TerraformTask@5
+    displayName: < Terraform Validate >
+    inputs:
+      provider: 'azurerm'
+      command: 'validate'
+      workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
   
