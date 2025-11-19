@@ -55,6 +55,7 @@ jobs:
     displayName: "Run tfsec (JUnit output)"
     inputs:
       targetType: 'inline'
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
       script: |
         tfsec --format junit --out tfsec-report.xml .
     continueOnError: true        # <-- Ignore even if report step fails
