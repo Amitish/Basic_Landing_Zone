@@ -24,21 +24,6 @@ jobs:
       command: 'validate'
       workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
   
-
-- job: terraformplan
-  dependsOn: terraforminitial
-  steps:
-  - task: TerraformTask@5
-    displayName: Terraform Init
-    inputs:
-      provider: 'azurerm'
-      command: 'init'
-      workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
-      backendServiceArm: 'new-service'
-      backendAzureRmStorageAccountName: 'stglactab'
-      backendAzureRmContainerName: 'cntrlab'
-      backendAzureRmKey: 'basic.tfstate'
-
   - task: TerraformTask@5
     displayName: Terraform Plan
     inputs:
@@ -49,6 +34,7 @@ jobs:
 
 
 - job: Scanning
+  dependsOn: terraforminitial
   displayName: Scanning Job
   steps:
   - task: tfsec@1
@@ -57,10 +43,23 @@ jobs:
       version: 'v1.26.0'
       debug: true
       dir: '$(System.DefaultWorkingDirectory)'
+    
+  - task: PowerShell@2
+    displayName: "Run tfsec (JUnit output)"
+    inputs:
+      targetType: 'inline'
+      script: |
+        tfsec --format junit --out tfsec-report.xml .
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'tfsec-report.xml'
+      testResultsFormat: 'JUnit'
+      mergeTestResults: true
 
 
 - job: validation
-  dependsOn: terraformplan
+  dependsOn: Scanning
   displayName: Manual Validation
   pool: server
   steps:
