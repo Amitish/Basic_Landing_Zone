@@ -57,9 +57,9 @@ jobs:
   - task: ManualValidation@1
     displayName: Requesting approver
     inputs:
-      notifyUsers: 'bisht.amit08@gmail.com'
-      approvers: 'bisht.amit08@gmail.com'
-      instructions: 'Kingly approve the pipeline'
+      notifyUsers: 'devopstudent08@gmail.com'
+      approvers: 'devopstudent08@gmail.com'
+      instructions: 'Kindly approve the pipeline'
 
 
 - job: Terraformapply
