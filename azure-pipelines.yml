@@ -33,8 +33,10 @@ jobs:
       environmentServiceNameAzureRM: 'new-service'
 
 
+
 - job: Scanning
   dependsOn: terraforminitial
+  condition: succeedOrFailed()
   displayName: Scanning Job
   steps:
   - task: tfsec@1
@@ -43,19 +45,7 @@ jobs:
       version: 'v1.26.0'
       debug: true
       dir: '$(System.DefaultWorkingDirectory)'
-    
-  - task: PowerShell@2
-    displayName: "Run tfsec (JUnit output)"
-    inputs:
-      targetType: 'inline'
-      script: |
-        tfsec --format junit --out tfsec-report.xml .
 
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFiles: 'tfsec-report.xml'
-      testResultsFormat: 'JUnit'
-      mergeTestResults: true
 
 
 - job: validation
@@ -71,7 +61,7 @@ jobs:
       instructions: 'Kingly approve the pipeline'
 
 
-- job: terraformapply
+- job: Terraformapply
   dependsOn: validation
   steps:
   - task: TerraformTask@5
