@@ -41,14 +41,15 @@ jobs:
   displayName: Scanning Job
   steps:
 
-  # 0) Install tfsec CLI
-  - script: |
-      wget https://github.com/aquasecurity/tfsec/releases/download/v1.26.0/tfsec-linux-amd64 -O tfsec
-      chmod +x tfsec
-      sudo mv tfsec /usr/local/bin/
-    displayName: "Install tfsec CLI"
+  # 0) Install tfsec CLI on Windows
+  - powershell: |
+      Invoke-WebRequest -Uri "https://github.com/aquasecurity/tfsec/releases/download/v1.26.0/tfsec-windows-amd64.exe" -OutFile "tfsec.exe"
+      Move-Item -Path "tfsec.exe" -Destination "C:\tfsec.exe" -Force
+      echo "##vso[task.prependpath]C:\"
+    displayName: "Install tfsec CLI (Windows)"
+    continueOnError: true
 
-  # 1) tfsec main scan
+  # 1) tfsec extension scan
   - task: tfsec@1
     displayName: Scanning the code
     inputs:
@@ -57,14 +58,11 @@ jobs:
       dir: '$(System.DefaultWorkingDirectory)'
     continueOnError: true
 
-  # 2) Generate JUnit report using tfsec CLI
-  - task: PowerShell@2
+  # 2) Create JUnit report
+  - powershell: |
+      tfsec --format junit --out tfsec-report.xml "$(System.DefaultWorkingDirectory)"
     displayName: "Run tfsec (JUnit output)"
-    inputs:
-      targetType: 'inline'
-      workingDirectory: '$(System.DefaultWorkingDirectory)'
-      script: |
-        tfsec --format junit --out tfsec-report.xml .
+    workingDirectory: "$(System.DefaultWorkingDirectory)"
     continueOnError: true
 
   # 3) Publish report
@@ -74,6 +72,7 @@ jobs:
       testResultsFormat: 'JUnit'
       mergeTestResults: true
     condition: succeededOrFailed()
+
 
 
   # >>> Manual Validation Job . . . 
