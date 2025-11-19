@@ -41,38 +41,49 @@ jobs:
   displayName: Scanning Job
   steps:
 
-  # 0) Install tfsec CLI on Windows
-  - powershell: |
-      Invoke-WebRequest -Uri "https://github.com/aquasecurity/tfsec/releases/download/v1.26.0/tfsec-windows-amd64.exe" -OutFile "tfsec.exe"
-      Move-Item -Path "tfsec.exe" -Destination "C:\tfsec.exe" -Force
-      echo "##vso[task.prependpath]C:\"
+  # 0) Install tfsec CLI (FOR WINDOWS AGENT)
+  - task: PowerShell@2
     displayName: "Install tfsec CLI (Windows)"
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Host "Downloading tfsec CLI for Windows..."
+        Invoke-WebRequest -Uri "https://github.com/aquasecurity/tfsec/releases/download/v1.26.0/tfsec-windows-amd64.exe" -OutFile "$(System.DefaultWorkingDirectory)\tfsec.exe"
+        Write-Host "tfsec downloaded. Adding to PATH..."
+        Write-Host "##vso[task.prependpath]$(System.DefaultWorkingDirectory)"
     continueOnError: true
 
-  # 1) tfsec extension scan
+
+  # 1) Run tfsec extension scan
   - task: tfsec@1
-    displayName: Scanning the code
+    displayName: "Scanning the code"
     inputs:
       version: 'v1.26.0'
       debug: true
       dir: '$(System.DefaultWorkingDirectory)'
     continueOnError: true
 
-  # 2) Create JUnit report
-  - powershell: |
-      tfsec --format junit --out tfsec-report.xml "$(System.DefaultWorkingDirectory)"
+
+  # 2) Generate JUnit XML report using tfsec CLI
+  - task: PowerShell@2
     displayName: "Run tfsec (JUnit output)"
-    workingDirectory: "$(System.DefaultWorkingDirectory)"
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Host "Running tfsec CLI to generate JUnit report..."
+        tfsec --format junit --out tfsec-report.xml "$(System.DefaultWorkingDirectory)"
+      workingDirectory: "$(System.DefaultWorkingDirectory)"
     continueOnError: true
 
-  # 3) Publish report
+
+  # 3) Publish XML report to Azure DevOps Test Results
   - task: PublishTestResults@2
+    displayName: "Publish tfsec Test Results"
     inputs:
       testResultsFiles: '**/tfsec-report.xml'
       testResultsFormat: 'JUnit'
       mergeTestResults: true
     condition: succeededOrFailed()
-
 
 
   # >>> Manual Validation Job . . . 
