@@ -38,6 +38,7 @@ jobs:
 
   # >>> Scanning Job . . . 
 - job: Scanning
+  condition: succeededOrFailed() 
   dependsOn: terraforminitial
   displayName: Scanning Job
   steps:
@@ -48,7 +49,7 @@ jobs:
       version: 'v1.26.0'
       debug: true
       dir: '$(System.DefaultWorkingDirectory)'
-    condition: succeededOrFailed()   # <-- Report will always publish even if tfsec fails or pass
+    continueOnError: true   # <-- Report will always publish even if tfsec fails or pass
 
 
   # >>> Manual Validation Job . . . 
