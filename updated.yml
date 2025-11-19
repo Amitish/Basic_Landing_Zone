@@ -41,6 +41,13 @@ jobs:
   displayName: Scanning Job
   steps:
 
+  # 0) Install tfsec CLI
+  - script: |
+      wget https://github.com/aquasecurity/tfsec/releases/download/v1.26.0/tfsec-linux-amd64 -O tfsec
+      chmod +x tfsec
+      sudo mv tfsec /usr/local/bin/
+    displayName: "Install tfsec CLI"
+
   # 1) tfsec main scan
   - task: tfsec@1
     displayName: Scanning the code
@@ -48,9 +55,9 @@ jobs:
       version: 'v1.26.0'
       debug: true
       dir: '$(System.DefaultWorkingDirectory)'
-    continueOnError: true        # <-- Pipeline will run even on fail
+    continueOnError: true
 
-  # 2) Generate JUnit report
+  # 2) Generate JUnit report using tfsec CLI
   - task: PowerShell@2
     displayName: "Run tfsec (JUnit output)"
     inputs:
@@ -58,15 +65,15 @@ jobs:
       workingDirectory: '$(System.DefaultWorkingDirectory)'
       script: |
         tfsec --format junit --out tfsec-report.xml .
-    continueOnError: true        # <-- Ignore even if report step fails
+    continueOnError: true
 
-  # 3) Publish report to Test Results
+  # 3) Publish report
   - task: PublishTestResults@2
     inputs:
-      testResultsFiles: 'tfsec-report.xml'
+      testResultsFiles: '**/tfsec-report.xml'
       testResultsFormat: 'JUnit'
       mergeTestResults: true
-    condition: succeededOrFailed()   # <-- Report will always publish even if tfsec fails or pass
+    condition: succeededOrFailed()
 
 
   # >>> Manual Validation Job . . . 
