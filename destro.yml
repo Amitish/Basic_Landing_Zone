@@ -63,7 +63,7 @@ jobs:
     inputs:
       notifyUsers: 'devopstudent08'
       approvers: 'devopstudent08'
-      instructions: 'Kingly approve the pipeline'
+      instructions: 'Kindly approve the pipeline'
 
 - job: Terraformapply
   dependsOn: validation
