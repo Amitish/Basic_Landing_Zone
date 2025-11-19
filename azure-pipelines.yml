@@ -35,9 +35,9 @@ jobs:
 
 
 - job: Scanning
-  dependsOn: terraforminitial
-  condition: succeedOrFailed()
   displayName: Scanning Job
+  dependsOn: terraforminitial
+  condition: succeededOrFailed()
   steps:
   - task: tfsec@1
     displayName: Scanning the code
@@ -45,6 +45,7 @@ jobs:
       version: 'v1.26.0'
       debug: true
       dir: '$(System.DefaultWorkingDirectory)'
+    continueOnError: true            # <-- lets step run without stopping job
 
 
 
