@@ -59,11 +59,10 @@ jobs:
   pool: server
   steps:
   - task: ManualValidation@1
-    displayName: Requesting approver
     inputs:
-      notifyUsers: 'devopstudent08'
-      approvers: 'devopstudent08'
-      instructions: 'Kindly approve the pipeline'
+      notifyUsers: 'bisht.amit08@gmail.com'
+      approvers: 'bisht.amit08@gmail.com'
+      instructions: 'Kindly approve'
 
 - job: Terraformapply
   dependsOn: validation
@@ -85,4 +84,5 @@ jobs:
       provider: 'azurerm'
       command: 'apply'
       workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
+      commandOptions: '--auto-approve'
       environmentServiceNameAzureRM: 'new-service'
