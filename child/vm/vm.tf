@@ -19,7 +19,8 @@ resource "azurerm_linux_virtual_machine" "vm-del" {
   admin_username                  = data.azurerm_key_vault_secret.username.value
   admin_password                  = data.azurerm_key_vault_secret.password.value
   disable_password_authentication = false
-  network_interface_ids           = [azurerm_network_interface.nic-del.id]
+
+  network_interface_ids = [azurerm_network_interface.nic-del.id]
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"

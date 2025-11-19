@@ -7,7 +7,7 @@ resource "azurerm_key_vault" "kv" {
   enabled_for_disk_encryption = true
   tenant_id                   = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days  = 7
-  purge_protection_enabled    = false
+  purge_protection_enabled    = true # Devops best practice
 
   sku_name = "standard"
 
@@ -37,3 +37,7 @@ resource "azurerm_key_vault" "kv" {
 #   role_definition_name = "Key Vault Administrator"
 #   scope                = azurerm_key_vault.kv.id
 # }
+
+
+
+
