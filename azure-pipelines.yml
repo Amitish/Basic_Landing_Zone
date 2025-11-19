@@ -3,7 +3,7 @@ trigger: none
 pool: mera-agent-pool
 
 jobs:
-- job: terraforminit
+- job: terraforminitial
   displayName: Terrform basic commands
   steps:
   - task: TerraformTask@5
@@ -26,7 +26,7 @@ jobs:
   
 
 - job: terraformplan
-  dependsOn: terraforminit
+  dependsOn: terraforminitial
   steps:
   - task: TerraformTask@5
     displayName: Terraform Init
@@ -40,11 +40,23 @@ jobs:
       backendAzureRmKey: 'basic.tfstate'
 
   - task: TerraformTask@5
+    displayName: Terraform Plan
     inputs:
       provider: 'azurerm'
       command: 'plan'
       workingDirectory: '$(System.DefaultWorkingDirectory)\environment\dev'
       environmentServiceNameAzureRM: 'new-service'
+
+
+- job: Scanning
+  displayName: Scanning Job
+  steps:
+  - task: tfsec@1
+    displayName: Scanning the code
+    inputs:
+      version: 'v1.26.0'
+      debug: true
+      dir: '$(System.DefaultWorkingDirectory)'
 
 
 - job: validation
@@ -53,7 +65,7 @@ jobs:
   pool: server
   steps:
   - task: ManualValidation@1
-    displayName: Manual Validation
+    displayName: Requesting approver
     inputs:
       notifyUsers: 'bisht.amit08@gmail.com'
       approvers: 'bisht.amit08@gmail.com'
@@ -75,6 +87,7 @@ jobs:
       backendAzureRmKey: 'basic.tfstate'
 
   - task: TerraformTask@5
+    displayName: Terraform Apply
     inputs:
       provider: 'azurerm'
       command: 'apply'
