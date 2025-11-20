@@ -49,8 +49,24 @@ jobs:
       version: 'v1.26.0'
       debug: true
       dir: '$(System.DefaultWorkingDirectory)'
-    continueOnError: true            # <-- lets step run without stopping job
+    continueOnError: true                         # <-- lets step run without stopping job
 
+    steps:
+  # Install TFLint
+  - script: |
+      curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+    displayName: Install TFLint
+
+  # Initialize TFLint (plugin download)
+  - script: |
+      tflint --init
+    displayName: Init TFLint
+
+  # Run TFLint Scan
+  - script: |
+      tflint $(System.DefaultWorkingDirectory)
+    displayName: Run TFLint
+    continueOnError: true
 
 
 - job: validation
