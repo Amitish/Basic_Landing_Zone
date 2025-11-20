@@ -1,4 +1,8 @@
-trigger: none
+trigger:
+  branches:
+    include:
+      - main 
+      - feature/*
 
 pool: mera-agent-pool
 
@@ -50,6 +54,7 @@ jobs:
 
 
 - job: validation
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
   dependsOn: Scanning
   displayName: Manual Validation
   pool: server
