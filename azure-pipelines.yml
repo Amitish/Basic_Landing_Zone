@@ -54,7 +54,6 @@ jobs:
 
 
 - job: validation
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
   dependsOn: Scanning
   displayName: Manual Validation
   pool: server
@@ -82,6 +81,7 @@ jobs:
       backendAzureRmKey: 'basic.tfstate'
 
   - task: TerraformTask@5
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
     displayName: Terraform Apply
     inputs:
       provider: 'azurerm'
