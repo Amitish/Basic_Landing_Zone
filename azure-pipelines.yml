@@ -51,23 +51,24 @@ jobs:
       dir: '$(System.DefaultWorkingDirectory)'
     continueOnError: true                         # <-- lets step run without stopping job
 
-  # Install TFLint on Windows
+  # Install TFLint on Windows (No admin needed)
   - powershell: |
       Invoke-WebRequest -Uri "https://github.com/terraform-linters/tflint/releases/download/v0.50.3/tflint_windows_amd64.zip" -OutFile "tflint.zip"
       Expand-Archive -Path "tflint.zip" -DestinationPath "$(Build.SourcesDirectory)\tflint"
-      Copy-Item "$(Build.SourcesDirectory)\tflint\tflint.exe" "C:\Windows\System32\tflint.exe" -Force
+      Write-Host "TFLint downloaded at $(Build.SourcesDirectory)\tflint\tflint.exe"
     displayName: Install TFLint (Windows)
 
   # Init TFLint
   - powershell: |
-      tflint --init
+      & "$(Build.SourcesDirectory)\tflint\tflint.exe" --init
     displayName: Init TFLint
 
   # Run TFLint
   - powershell: |
-      tflint "$(System.DefaultWorkingDirectory)"
+      & "$(Build.SourcesDirectory)\tflint\tflint.exe" "$(System.DefaultWorkingDirectory)"
     displayName: Run TFLint
     continueOnError: true
+
 
 
 - job: validation
