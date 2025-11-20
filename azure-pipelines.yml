@@ -51,21 +51,21 @@ jobs:
       dir: '$(System.DefaultWorkingDirectory)'
     continueOnError: true                         # <-- lets step run without stopping job
 
-  
-  # Install TFLint
-    condition: succeededOrFailed()
-  - script: |
-      curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-    displayName: Install TFLint
+  # Install TFLint on Windows
+  - powershell: |
+      Invoke-WebRequest -Uri "https://github.com/terraform-linters/tflint/releases/download/v0.50.3/tflint_windows_amd64.zip" -OutFile "tflint.zip"
+      Expand-Archive -Path "tflint.zip" -DestinationPath "$(Build.SourcesDirectory)\tflint"
+      Copy-Item "$(Build.SourcesDirectory)\tflint\tflint.exe" "C:\Windows\System32\tflint.exe" -Force
+    displayName: Install TFLint (Windows)
 
-  # Initialize TFLint (plugin download)
-  - script: |
+  # Init TFLint
+  - powershell: |
       tflint --init
     displayName: Init TFLint
 
-  # Run TFLint Scan
-  - script: |
-      tflint $(System.DefaultWorkingDirectory)
+  # Run TFLint
+  - powershell: |
+      tflint "$(System.DefaultWorkingDirectory)"
     displayName: Run TFLint
     continueOnError: true
 
