@@ -60,12 +60,12 @@ variable "nic_name" {
   type        = string
 }
 
-variable "frontend_ip_name" {
+variable "ip_name" {
   description = "Frontend Wali IP ka naam"
   type        = string
 }
 
-variable "frontend_subnet_name" {
+variable "subnet_name" {
   description = "Frontend Wale Subnet ka naam"
   type        = string
 }

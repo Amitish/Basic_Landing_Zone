@@ -44,12 +44,13 @@ module "front_public_ip" {
 module "back_public_ip" {
   depends_on        = [module.rgs]
   source            = "../../child/pip"
-  pip_name          = "titli-back-pip"
+  pip_name          = "titli-front-pip"
   rg_name           = "titli-rg"
   rg_location       = "Central India"
   allocation_method = "Static" # Static and Dynamic - private IP
   # sku = "Basic"
 }
+
 
 module "key_vault" {
   depends_on     = [module.rgs]
@@ -89,11 +90,33 @@ module "frontend_vm" {
   # image_offer          = "0001-com-ubuntu-server-focal"
   # image_sku            = "20_04-lts"
   # image_version        = "latest"
-  nic_name             = "titli-nic-vm-frontend2"
-  frontend_ip_name     = "titli-front-pip"
-  vnet_name            = "titli-vnet-todoapp"
-  frontend_subnet_name = "titli-vnet"
-  key_vault_name       = "merekey123"
+  nic_name       = "titli-nic-vm-frontend2"
+  ip_name        = "titli-front-pip"
+  vnet_name      = "titli-vnet-todoapp"
+  subnet_name    = "titli-vnet"
+  key_vault_name = "merekey123"
+  # username_secret_name = "vm-username"
+  # password_secret_name = "vm-password"
+}
+
+module "backend_vm" {
+  depends_on  = [module.front_subs, module.front_public_ip, module.key_vault]
+  source      = "../../child/vm"
+  rg_name     = "titli-rg"
+  rg_location = "Central India"
+  vm_name     = "titli-vm-backend2"
+  vm_size     = "Standard_B1s"
+  username    = "username"
+  password    = "password"
+  # image_publisher      = "Canonical"
+  # image_offer          = "0001-com-ubuntu-server-focal"
+  # image_sku            = "20_04-lts"
+  # image_version        = "latest"
+  nic_name       = "titli-nic-vm-backend2"
+  ip_name        = "titli-back-pip"
+  vnet_name      = "titli-vnet-todoapp"
+  subnet_name    = "titli-back-subnet"
+  key_vault_name = "merekey123"
   # username_secret_name = "vm-username"
   # password_secret_name = "vm-password"
 }
